@@ -10,6 +10,23 @@ function DataManager.GetData(player: Player)
 	return DataManager.Profiles[player].Data
 end
 
+function DataManager.UpdateLeaderstats(player: Player)
+	local leaderstats = player:FindFirstChild("leaderstats")
+	if not leaderstats then
+		return
+	end
+	local data = DataManager.GetData(player)
+	if not data then
+		return
+	end
+
+	local cash = leaderstats:FindFirstChild("Cash") :: NumberValue
+	local wins = leaderstats:FindFirstChild("Wins") :: NumberValue
+
+	cash.Value = data.Cash
+	wins.Value = data.Wins
+end
+
 function DataManager.AddCash(player: Player, amount: number)
 	local profile = DataManager.Profiles[player]
 	if not profile then
@@ -18,6 +35,7 @@ function DataManager.AddCash(player: Player, amount: number)
 
 	profile.Data.Cash += amount
 	player:SetAttribute("Cash", profile.Data.Cash)
+	DataManager.UpdateLeaderstats(player)
 end
 
 function DataManager.AddWins(player: Player, amount: number)
@@ -28,6 +46,7 @@ function DataManager.AddWins(player: Player, amount: number)
 
 	profile.Data.Wins += amount
 	player:SetAttribute("Wins", profile.Data.Wins)
+	DataManager.UpdateLeaderstats(player)
 end
 
 function DataManager.AddItem(player: Player, item: string, amount: number?)
